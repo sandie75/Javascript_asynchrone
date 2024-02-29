@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuto Ajax</title>
+</head>
+<body>
+    <button onclick=showCountries()>Show countries</button>
+    <div id="feed"></div>
+</body>
+<script>
+    function showCountries(){
+       let xhr = new XMLHttpRequest()
+       //on initialise la requête avec la méthode open. 
+       // 3 choses à préciser entre les (): le type de requête, le chemin vers la data, 
+       //si la requête est asynchrone(true) ou pas (false).
+       xhr.open('GET', 'https://restcountries.com/v3.1/all', true)
+       //Pour gérer la réponse, on utilise la méthose onload
+       //avec un callback. Ella va gérer les status codes reçus. Pleins de codes possibles(cf http status dogs)
+       xhr.onload = function(){
+            if(xhr.status==200){
+                console.log('success')
+                //JSON est un objet. Parse est une methode qui lui est attachée et qui va rendre la réponse lisible.
+                let countries = JSON.parse(this.response)
+                console.log(countries)
+                //on prend le tableau des pays et pour chaque pays (forEach) on crée une div.
+                countries.forEach(country => {
+                    const countryCard = document.createElement('div')
+                    //on remplace le contenu html des div countryCard par les noms de pays
+                    //name et common sont les clés indiquées dans le tableau renvoyé par l'api pour avoir les noms.
+                    countryCard.innerHTML = country.name.common
+                    //On ajoute les countryCard à l'élément #feed
+                    document.getElementById('feed').appendChild(countryCard)
+                });
+            }
+       }
+       //on envoie la requête avec la méthode send.
+       xhr.send()
+    }
+</script>
+</html>
